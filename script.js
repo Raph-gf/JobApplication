@@ -66,9 +66,7 @@ const submitHandler = (event) => {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       const { jobItems } = data;
-      console.log(jobItems);
 
       // remove spinner
       spinnerSearchEl.classList.remove("spinner--visible");

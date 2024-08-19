@@ -8,7 +8,7 @@ import { renderSpinner } from "./Spinner.js";
 // -- JOB LIST COMPONENT --
 
 // RENDER JOB LSIT
-export const renderJobList = () => {
+export const renderJobList = (jobItems) => {
   jobItems.slice(0, 7).forEach((jobItem) => {
     const newJobItemHtml = `
         <li class="job-item">

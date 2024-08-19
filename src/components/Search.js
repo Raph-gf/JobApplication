@@ -56,7 +56,7 @@ const submitHandler = (event) => {
       numberEl.textContent = jobItems.length;
 
       // render job items in the job list
-      renderJobList();
+      renderJobList(jobItems);
     })
     .catch((error) => console.log(error));
 };

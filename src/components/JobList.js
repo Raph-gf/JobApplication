@@ -2,6 +2,8 @@ import {
   jobListSearchEl,
   jobDetailsContentEl,
   BASE_API_URL,
+  getData,
+  state,
 } from "../common.js";
 import { renderError } from "./Error.js";
 import { renderJobDetails } from "./JobDetails.js";
@@ -10,8 +12,8 @@ import { renderSpinner } from "./Spinner.js";
 // -- JOB LIST COMPONENT --
 
 // RENDER JOB LSIT
-export const renderJobList = (jobItems) => {
-  jobItems.slice(0, 7).forEach((jobItem) => {
+export const renderJobList = () => {
+  state.searchJobItems.slice(0, 7).forEach((jobItem) => {
     const newJobItemHtml = `
         <li class="job-item">
       <a class="job-item__link" href=${jobItem.id}>
@@ -75,13 +77,8 @@ const clickHandler = async (event) => {
 
   // fetch job item data modern syntax
   try {
-    const response = await fetch(`${BASE_API_URL}/jobs/${id}`);
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.description);
-    }
+    // Using HELPER / UTILITY Function to fetch data from common.js file
+    const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
     // extract job data
     const { jobItem } = data;

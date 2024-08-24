@@ -3,6 +3,7 @@ import {
   jobDetailsContentEl,
   BASE_API_URL,
 } from "../common.js";
+import { renderError } from "./Error.js";
 import { renderJobDetails } from "./JobDetails.js";
 import { renderSpinner } from "./Spinner.js";
 
@@ -34,7 +35,7 @@ export const renderJobList = (jobItems) => {
   });
 };
 
-const clickHandler = (event) => {
+const clickHandler = async (event) => {
   // prevent default behavior
   event.preventDefault();
 
@@ -72,27 +73,49 @@ const clickHandler = (event) => {
   const id = jobItemEl.children[0].getAttribute("href");
   console.log(id);
 
-  // fetch job item data
-  fetch(`${BASE_API_URL}/jobs/${id}`)
-    .then((response) => {
-      if (!response.ok) {
-        console.log("something went wrong");
-        return;
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // extract job data
-      const { jobItem } = data;
-      console.log(jobItem);
+  // fetch job item data modern syntax
+  try {
+    const response = await fetch(`${BASE_API_URL}/jobs/${id}`);
 
-      // remove spinner
-      renderSpinner("jobs");
+    const data = await response.json();
 
-      // render job details
-      renderJobDetails(jobItem);
-    })
-    .catch((error) => console.log(error));
+    if (!response.ok) {
+      throw new Error(data.description);
+    }
+
+    // extract job data
+    const { jobItem } = data;
+    // remove spinner
+    renderSpinner("jobs");
+
+    // render job details
+    renderJobDetails(jobItem);
+  } catch (error) {
+    renderError(error.message), renderSpinner("jobs");
+  }
+  // fetch(`${BASE_API_URL}//jobs/${id}`)
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         "Ressourse issue (e.g ressource does not exist) or server issues"
+  //       );
+  //     }
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     // extract job data
+  //     const { jobItem } = data;
+  //     console.log(jobItem);
+
+  //     // remove spinner
+  //     renderSpinner("jobs");
+
+  //     // render job details
+  //     renderJobDetails(jobItem);
+  //   })
+  //   .catch((error) => {
+  //     renderError(error.message), renderSpinner("jobs");
+  //   });
 };
 
 jobListSearchEl.addEventListener("click", clickHandler);

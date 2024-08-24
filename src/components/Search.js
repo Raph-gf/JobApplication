@@ -11,7 +11,7 @@ import { renderSpinner } from "./Spinner.js";
 
 // -- SEARCH COMPONENT --
 
-const submitHandler = (event) => {
+const submitHandler = async (event) => {
   // prevent default behavior
   event.preventDefault();
 
@@ -36,29 +36,57 @@ const submitHandler = (event) => {
   // display spinner
   renderSpinner("search");
 
-  // fetch search result
-  fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
-    .then((response) => {
-      if (!response.ok) {
-        console.log("something went wrong");
-        return;
-      }
-      return response.json();
-    })
-    .then((data) => {
-      const { jobItems } = data;
-      console.log(jobItems);
+  // fetch search result modern syntax
+  try {
+    const response = await fetch(`${BASE_API_URL}/jobs?search=${searchText}`);
 
-      // remove spinner
-      renderSpinner("search");
+    const data = await response.json();
 
-      // render  number of results
-      numberEl.textContent = jobItems.length;
+    if (!response.ok) {
+      throw new Error(data.description);
+    }
+    // extract job items
+    const { jobItems } = data;
 
-      // render job items in the job list
-      renderJobList(jobItems);
-    })
-    .catch((error) => console.log(error));
+    // remove spinner
+    renderSpinner("search");
+
+    // render  number of results
+    numberEl.textContent = jobItems.length;
+
+    // render job items in the job list
+    renderJobList(jobItems);
+  } catch (error) {
+    renderSpinner("search"), renderError(error.message);
+  }
+
+  // fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         "Ressourse issue (e.g ressource does not exist) or server issues"
+  //       );
+  //     }
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     const { jobItems } = data;
+  //     console.log(jobItems);
+
+  //     // remove spinner
+  //     renderSpinner("search");
+
+  //     // render  number of results
+  //     numberEl.textContent = jobItems.length;
+
+  //     // render job items in the job list
+  //     renderJobList(jobItems);
+  //   })
+
+  //   // network problems or others error (e.g ressource does not exist or trying to parse something that's not JSON as JSON)
+  //   .catch((error) => {
+  //     renderSpinner("search"), renderError(error.message);
+  //   });
 };
 
 searchFormEl.addEventListener("submit", submitHandler);

@@ -11,8 +11,12 @@ import { renderSpinner } from "./Spinner.js";
 
 // -- JOB LIST COMPONENT --
 
-// RENDER JOB LSIT
+// RENDER JOB LIST
 export const renderJobList = () => {
+  // remove previous jobs
+  jobListSearchEl.innerHTML = "";
+
+  // render sorted job list
   state.searchJobItems.slice(0, 7).forEach((jobItem) => {
     const newJobItemHtml = `
         <li class="job-item">

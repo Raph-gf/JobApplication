@@ -7,6 +7,7 @@ export const state = {
   searchJobItems: [],
   bookmarksJobItems: [],
 };
+console.log(state);
 
 // -- GLOBAL SELECTORS --
 export const bookmarksBtnEl = document.querySelector(".bookmarks-btn");

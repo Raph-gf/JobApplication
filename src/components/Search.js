@@ -45,6 +45,7 @@ const submitHandler = async (event) => {
 
     // extract job items
     const { jobItems } = data;
+    console.log(jobItems);
 
     //update state
     state.searchJobItems = jobItems;

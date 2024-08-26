@@ -2,14 +2,22 @@ import {
   jobListSearchEl,
   jobDetailsContentEl,
   BASE_API_URL,
+  getData,
+  state,
 } from "../common.js";
+import { renderError } from "./Error.js";
+import { renderJobDetails } from "./JobDetails.js";
 import { renderSpinner } from "./Spinner.js";
 
 // -- JOB LIST COMPONENT --
 
-// RENDER JOB LSIT
-export const renderJobList = (jobItems) => {
-  jobItems.slice(0, 7).forEach((jobItem) => {
+// RENDER JOB LIST
+export const renderJobList = () => {
+  // remove previous jobs
+  jobListSearchEl.innerHTML = "";
+
+  // render sorted job list
+  state.searchJobItems.slice(0, 7).forEach((jobItem) => {
     const newJobItemHtml = `
         <li class="job-item">
       <a class="job-item__link" href=${jobItem.id}>
@@ -33,7 +41,7 @@ export const renderJobList = (jobItems) => {
   });
 };
 
-const clickHandler = (event) => {
+const clickHandler = async (event) => {
   // prevent default behavior
   event.preventDefault();
 
@@ -71,99 +79,44 @@ const clickHandler = (event) => {
   const id = jobItemEl.children[0].getAttribute("href");
   console.log(id);
 
-  // fetch job item data
-  fetch(`${BASE_API_URL}/jobs/${id}`)
-    .then((response) => {
-      if (!response.ok) {
-        console.log("something went wrong");
-        return;
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // extract job data
-      const { jobItem } = data;
-      console.log(jobItem);
+  // fetch job item data modern syntax
+  try {
+    // Using HELPER / UTILITY Function to fetch data from common.js file
+    const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
-      // remove spinner
-      renderSpinner("jobs");
+    // extract job data
+    const { jobItem } = data;
+    // remove spinner
+    renderSpinner("jobs");
 
-      // render job details
-      const jobDetailHtml = `<img src=${
-        jobItem.coverImgURL
-      } alt="#" class="job-details__cover-img">
-  
-  <a class="apply-btn" href=${
-    jobItem.companyURL
-  } target="_blank">Apply <i class="fa-solid fa-square-arrow-up-right apply-btn__icon"></i></a>
-  
-  <section class="job-info">
-      <div class="job-info__left">
-          <div class="job-info__badge">${jobItem.badgeLetters}</div>
-          <div class="job-info__below-badge">
-              <time class="job-info__time">${jobItem.daysAgo}</time>
-              <button class="job-info__bookmark-btn">
-                  <i class="fa-solid fa-bookmark job-info__bookmark-icon"></i>
-              </button>
-          </div>
-      </div>
-      <div class="job-info__right">
-          <h2 class="second-heading">${jobItem.title}</h2>
-          <p class="job-info__company">${jobItem.company}s</p>
-          <p class="job-info__description">${jobItem.description}.</p>
-          <div class="job-info__extras">
-              <p class="job-info__extra"><i class="fa-solid fa-clock job-info__extra-icon"></i>${
-                jobItem.duration
-              }</p>
-              <p class="job-info__extra"><i class="fa-solid fa-money-bill job-info__extra-icon"></i>${
-                jobItem.salary
-              }</p>
-              <p class="job-info__extra"><i class="fa-solid fa-location-dot job-info__extra-icon"></i>${
-                jobItem.location
-              }</p>
-          </div>
-      </div>
-  </section>
-  
-  <div class="job-details__other">
-      <section class="qualifications">
-          <div class="qualifications__left">
-              <h4 class="fourth-heading">Qualifications</h4>
-              <p class="qualifications__sub-text">Other qualifications may apply</p>
-          </div>
-          <ul class="qualifications__list">
-          ${jobItem.qualifications
-            .map(
-              (qualificationText) =>
-                `<li class="qualifications__item">${qualificationText}</li>`
-            )
-            .join(" ")}
-          </ul>
-      </section>
-  
-      <section class="reviews">
-          <div class="reviews__left">
-              <h4 class="fourth-heading">Company reviews</h4>
-              <p class="reviews__sub-text">Recent things people are saying</p>
-          </div>
-          <ul class="reviews__list">
-          ${jobItem.reviews
-            .map(
-              (reviewsText) => `<li class="reviews__item">${reviewsText}</li>`
-            )
-            .join(" ")}
-              
-          </ul>
-      </section>
-  </div>
-  
-  <footer class="job-details__footer">
-      <p class="job-details__footer-text">If possible, please reference that you found the job on <span class="u-bold">rmtDev</span>, we would really appreciate it!</p>
-  </footer>`;
+    // render job details
+    renderJobDetails(jobItem);
+  } catch (error) {
+    renderError(error.message), renderSpinner("jobs");
+  }
+  // fetch(`${BASE_API_URL}//jobs/${id}`)
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         "Ressourse issue (e.g ressource does not exist) or server issues"
+  //       );
+  //     }
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     // extract job data
+  //     const { jobItem } = data;
+  //     console.log(jobItem);
 
-      jobDetailsContentEl.innerHTML = jobDetailHtml;
-    })
-    .catch((error) => console.log(error));
+  //     // remove spinner
+  //     renderSpinner("jobs");
+
+  //     // render job details
+  //     renderJobDetails(jobItem);
+  //   })
+  //   .catch((error) => {
+  //     renderError(error.message), renderSpinner("jobs");
+  //   });
 };
 
 jobListSearchEl.addEventListener("click", clickHandler);

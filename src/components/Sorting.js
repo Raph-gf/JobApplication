@@ -18,13 +18,11 @@ const clickHandler = (event) => {
   const recent = clickedButtonEl.className.includes("--recent") ? true : false;
 
   // make sorting button (in)active
-  if (recent) {
-    sortingBtnRecentEl.classList.add("sorting__button--active");
-    sortingBtnRelevantEl.classList.remove("sorting__button--active");
-  } else {
-    sortingBtnRecentEl.classList.remove("sorting__button--active");
-    sortingBtnRelevantEl.classList.add("sorting__button--active");
-  }
+  recent
+    ? (sortingBtnRecentEl.classList.add("sorting__button--active"),
+      sortingBtnRelevantEl.classList.remove("sorting__button--active"))
+    : (sortingBtnRecentEl.classList.remove("sorting__button--active"),
+      sortingBtnRelevantEl.classList.add("sorting__button--active"));
 
   // sort job items
   if (recent) {

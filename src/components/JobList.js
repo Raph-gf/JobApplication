@@ -4,6 +4,7 @@ import {
   BASE_API_URL,
   getData,
   state,
+  RESULT_PER_PAGE,
 } from "../common.js";
 import { renderError } from "./Error.js";
 import { renderJobDetails } from "./JobDetails.js";
@@ -17,8 +18,13 @@ export const renderJobList = () => {
   jobListSearchEl.innerHTML = "";
 
   // render sorted job list
-  state.searchJobItems.slice(0, 7).forEach((jobItem) => {
-    const newJobItemHtml = `
+  state.searchJobItems
+    .slice(
+      state.currentPage * RESULT_PER_PAGE - RESULT_PER_PAGE,
+      state.currentPage * RESULT_PER_PAGE
+    )
+    .forEach((jobItem) => {
+      const newJobItemHtml = `
         <li class="job-item">
       <a class="job-item__link" href=${jobItem.id}>
           <div class="job-item__badge">${jobItem.badgeLetters}</div>
@@ -37,8 +43,8 @@ export const renderJobList = () => {
           </div>
       </a>
   </li>`;
-    jobListSearchEl.insertAdjacentHTML("beforeend", newJobItemHtml);
-  });
+      jobListSearchEl.insertAdjacentHTML("beforeend", newJobItemHtml);
+    });
 };
 
 const clickHandler = async (event) => {
@@ -78,6 +84,9 @@ const clickHandler = async (event) => {
   // get job id
   const id = jobItemEl.children[0].getAttribute("href");
   console.log(id);
+
+  // add the id to the URL
+  history.pushState(null, "", `/#${id}`);
 
   // fetch job item data modern syntax
   try {

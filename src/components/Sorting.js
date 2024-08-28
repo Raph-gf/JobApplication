@@ -5,6 +5,7 @@ import {
   state,
 } from "../common.js";
 import { renderJobList } from "./JobList.js";
+import { renderPaginationsButton } from "./Pagination.js";
 
 const clickHandler = (event) => {
   event.preventDefault();
@@ -13,6 +14,10 @@ const clickHandler = (event) => {
 
   // stop function if no button was clicked
   if (!clickedButtonEl) return;
+
+  // update state (reset to page 1)
+  state.currentPage = 1;
+  renderPaginationsButton();
 
   // check if intention is recent or revelant sorting
   const recent = clickedButtonEl.className.includes("--recent") ? true : false;

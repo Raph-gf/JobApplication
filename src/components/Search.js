@@ -5,10 +5,13 @@ import {
   numberEl,
   BASE_API_URL,
   getData,
+  sortingBtnRelevantEl,
+  sortingBtnRecentEl,
   state,
 } from "../common.js";
 import { renderError } from "./Error.js";
 import { renderJobList } from "./JobList.js";
+import { renderPaginationsButton } from "./Pagination.js";
 import { renderSpinner } from "./Spinner.js";
 
 // -- SEARCH COMPONENT --
@@ -28,6 +31,10 @@ const submitHandler = async (event) => {
     renderError("Your search may not contain numbers");
     return;
   }
+
+  // reset sorting button
+  sortingBtnRecentEl.classList.remove("sorting__button--active"),
+    sortingBtnRelevantEl.classList.add("sorting__button--active");
 
   // blur search bar
   searchInputEl.blur();
@@ -49,6 +56,10 @@ const submitHandler = async (event) => {
 
     //update state
     state.searchJobItems = jobItems;
+    state.currentPage = 1;
+
+    // reset paginations button
+    renderPaginationsButton();
 
     // remove spinner
     renderSpinner("search");

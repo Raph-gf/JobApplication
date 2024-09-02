@@ -8,6 +8,7 @@ export const state = {
   searchJobItems: [],
   currentPage: 1,
   bookmarksJobItems: [],
+  activeJobItem: {}, // book
 };
 console.log(state);
 

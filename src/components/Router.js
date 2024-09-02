@@ -1,5 +1,12 @@
-import { BASE_API_URL, getData, jobDetailsContentEl } from "../common.js";
+import {
+  BASE_API_URL,
+  getData,
+  jobDetailsContentEl,
+  state,
+} from "../common.js";
+import { renderError } from "./Error.js";
 import { renderJobDetails } from "./JobDetails.js";
+import { renderJobList } from "./JobList.js";
 import { renderSpinner } from "./Spinner.js";
 
 const loadHashChangeHandler = async () => {
@@ -8,6 +15,12 @@ const loadHashChangeHandler = async () => {
 
   // remove the previous job details
   if (id) {
+    // remove the active class from previously active job item
+    document
+      .querySelectorAll(".job-item--active")
+      .forEach((jobItemsWithActiveClass) =>
+        jobItemsWithActiveClass.classList.remove("job-item--active")
+      );
     jobDetailsContentEl.innerHTML = "";
 
     // remove spinner
@@ -20,6 +33,12 @@ const loadHashChangeHandler = async () => {
 
       // extract job data
       const { jobItem } = data;
+
+      // update state
+      state.activeJobItem = jobItem;
+
+      //render job list
+      renderJobList();
 
       // remove spinner
       renderSpinner("jobs");

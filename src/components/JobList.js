@@ -81,7 +81,6 @@ const clickHandler = async (event) => {
 
   // get the job items that was clicked
   const jobItemEl = event.target.closest(".job-item");
-  console.log(jobItemEl);
 
   // remove the active class from previously active job item
   document
@@ -110,7 +109,6 @@ const clickHandler = async (event) => {
 
   // get job id
   const id = jobItemEl.children[0].getAttribute("href");
-  console.log(id);
 
   // add the id to the URL
   history.pushState(null, "", `/#${id}`);

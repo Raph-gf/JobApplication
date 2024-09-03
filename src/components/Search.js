@@ -22,7 +22,6 @@ const submitHandler = async (event) => {
 
   // get search text
   const searchText = searchInputEl.value;
-  console.log(event);
 
   // input validation (regular expression)
   const forbiddenPatern = /[0-9]/;

@@ -10,11 +10,6 @@ import {
 import { renderJobList } from "./JobList.js";
 
 export const renderPaginationsButton = () => {
-  // hide the next button if they are no job items
-  //   state.searchJobItems = []
-  //     ? paginationBtnNextEl.classList.add("pagination__button--hidden")
-  //     : paginationBtnNextEl.classList.remove("pagination__button--hidden");
-
   // display back button if we are on page 2 or further
   state.currentPage >= 2
     ? paginationBtnBackEl.classList.remove("pagination__button--hidden")
